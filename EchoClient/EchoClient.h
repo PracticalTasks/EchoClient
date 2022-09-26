@@ -19,7 +19,9 @@ public:
 	~EchoClient();
 
 private:
-	//inline std::string& rtrim(std::string& s);
 	int write(const uint16_t WRITE_PORT);
+	void strToLower(std::string& str);
 
+private:
+	const std::string CMD_EXT = "exit";
 };
