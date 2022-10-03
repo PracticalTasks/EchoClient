@@ -52,8 +52,7 @@ int EchoClient::write(const uint16_t WRITE_PORT)
             break;
         }
 
-        recvLen = recvfrom(echoSock, recvBuffer, sizeof(recvBuffer) - 1, 0,
-            reinterpret_cast<sockaddr*>(&servAddr), &clientAddressLen);
+        recvLen = recv(echoSock, recvBuffer, sizeof(recvBuffer) - 1, 0);
 
         std::cout << recvBuffer << std::endl;
     }
