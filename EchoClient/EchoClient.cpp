@@ -13,27 +13,27 @@ EchoClient::~EchoClient()
 
 int EchoClient::write(const uint16_t WRITE_PORT)
 {
-    socket_wrapper::SocketWrapper sockWrap;
-    socket_wrapper::Socket echoSock = { AF_INET, SOCK_DGRAM, 0 };
+    socket_wrapper::SocketWrapper sock_wrap;
+    socket_wrapper::Socket echo_sock = { AF_INET, SOCK_DGRAM, 0 };
 
-    if (!echoSock)
+    if (!echo_sock)
     {
-        std::cerr << sockWrap.get_last_error_string() << std::endl;
+        std::cerr << sock_wrap.get_last_error_string() << std::endl;
         return EXIT_FAILURE;
     }
 
-    sockaddr_in servAddr = {
+    sockaddr_in serv_addr = {
         .sin_family = AF_INET,
         .sin_port = htons(WRITE_PORT)
     };
 
-    servAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 
     std::string buffer;
-    char recvBuffer[256]{};
-    int recvLen{};
-    socklen_t clientAddressLen = sizeof(sockaddr_in);
+    char recv_buffer[256]{};
+    int recv_len{};
+    socklen_t client_addrlen = sizeof(sockaddr_in);
     std::cout << "Starting echo client ...\n";
 
 
@@ -41,10 +41,10 @@ int EchoClient::write(const uint16_t WRITE_PORT)
     {
         std::cin >> buffer;
 
-        sendto(echoSock, buffer.c_str(), buffer.size(), 0, reinterpret_cast<const sockaddr*>(&servAddr),
-            sizeof(servAddr));
+        sendto(echo_sock, buffer.c_str(), buffer.size(), 0, reinterpret_cast<const sockaddr*>(&serv_addr),
+            sizeof(serv_addr));
 
-        strToLower(buffer);
+        str_tolower(buffer);
 
         if (buffer == CMD_EXT)
         {
@@ -52,15 +52,15 @@ int EchoClient::write(const uint16_t WRITE_PORT)
             break;
         }
 
-        recvLen = recv(echoSock, recvBuffer, sizeof(recvBuffer) - 1, 0);
+        recv_len = recv(echo_sock, recv_buffer, sizeof(recv_buffer) - 1, 0);
 
-        std::cout << recvBuffer << std::endl;
+        std::cout << recv_buffer << std::endl;
     }
 
     return EXIT_SUCCESS;
 }
 
-void EchoClient::strToLower(std::string& str)
+void EchoClient::str_tolower(std::string& str)
 {
     for (int i{}; i < str.size(); ++i)
         str[i] = tolower(str[i]);
