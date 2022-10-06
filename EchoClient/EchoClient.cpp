@@ -64,4 +64,5 @@ void EchoClient::str_tolower(std::string& str)
 {
     for (int i{}; i < str.size(); ++i)
         str[i] = tolower(str[i]);
+
 }
