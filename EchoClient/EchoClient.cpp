@@ -13,10 +13,13 @@ EchoClient::~EchoClient()
 
 int EchoClient::write(const uint16_t WRITE_PORT)
 {
-    socket_wrapper::SocketWrapper sock_wrap;
-    socket_wrapper::Socket echo_sock = { AF_INET, SOCK_DGRAM, 0 };
+    std::cout << "Starting echo client ...\n";
 
-    if (!echo_sock)
+    socket_wrapper::SocketWrapper sock_wrap;
+    socket_wrapper::Socket client_sock = { AF_INET, SOCK_STREAM, NULL };
+    const char IP_SERV[] = "127.0.0.1";
+
+    if (!client_sock)
     {
         std::cerr << sock_wrap.get_last_error_string() << std::endl;
         return EXIT_FAILURE;
@@ -27,34 +30,90 @@ int EchoClient::write(const uint16_t WRITE_PORT)
         .sin_port = htons(WRITE_PORT)
     };
 
-    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serv_addr.sin_addr.s_addr = inet_addr(IP_SERV);
 
+    if (connect(client_sock, (SOCKADDR*)&serv_addr, sizeof(serv_addr)))
+    {
+        std::cout << "Connection to Server is FAILED. Error #";
+        std::cerr << sock_wrap.get_last_error_string() << std::endl;
+        return EXIT_FAILURE;
+    }
 
-    std::string buffer;
-    char recv_buffer[256]{};
-    int recv_len{};
-    socklen_t client_addrlen = sizeof(sockaddr_in);
-    std::cout << "Starting echo client ...\n";
+    std::cout << "Connected! ...\n";
 
+    //std::string buffer;
+    //char recv_buffer[256]{};
+    //int recv_len{};
+    //socklen_t client_addrlen = sizeof(sockaddr_in);
+
+    std::vector<char>buff(BUFF_SIZE);
+    std::string send_mess;
+    std::string send_buff;
+
+    short packet_size = 0;
 
     while (true)
     {
-        std::cin >> buffer;
+        std::cout << "Your (Client) message to Server: ";
+        //std::cin >> send_mess;
+        fgets(buff.data(), buff.size(), stdin);
 
-        sendto(echo_sock, buffer.c_str(), buffer.size(), 0, reinterpret_cast<const sockaddr*>(&serv_addr),
-            sizeof(serv_addr));
+        //send_buff.reserve(send_mess.size() + 2);
+        //uint8_t sz_l = send_mess.size();
+        //uint8_t sz_h = (send_mess.size() & 0xFFFF) >> 8;
 
-        str_tolower(buffer);
+        //send_buff.at(0) = sz_l;
+        //send_buff.at(1) = sz_h;
+        //send_buff.insert(2, send_mess);
 
-        if (buffer == CMD_EXT)
+        send_mess = buff.data();
+
+        packet_size = send(client_sock, send_mess.c_str(), send_mess.size() - 1, 0);
+
+        if (packet_size == SOCKET_ERROR)
         {
-            std::cout << "Stoped echo clients ...\n";
-            break;
+            std::cout << "Can't send message to Server. Error #";
+            std::cerr << sock_wrap.get_last_error_string() << std::endl;
+            return EXIT_FAILURE;
         }
 
-        recv_len = recv(echo_sock, recv_buffer, sizeof(recv_buffer) - 1, 0);
+        if (send_mess == "exit\n")
+        {
+            shutdown(client_sock, SD_BOTH);
+            std::cout << "Stopping echo server ...\n";
+            std::cout << "Disconected\n";
+            return 0;
+        }
 
-        std::cout << recv_buffer << std::endl;
+        packet_size = recv(client_sock, buff.data(), buff.size(), 0);
+
+        if (packet_size == SOCKET_ERROR)
+        {
+            std::cout << "Can`t receiv message from Server. Error #";
+            std::cerr << sock_wrap.get_last_error_string() << std::endl;
+            return EXIT_FAILURE;
+        }
+        else
+            std::cout << "Server message: " << buff.data() << std::endl;
+
+        //std::cin >> buffer;
+
+        //sendto(client_sock, buffer.c_str(), buffer.size(), 0, reinterpret_cast<const sockaddr*>(&serv_addr),
+        //    sizeof(serv_addr));
+
+        //str_tolower(buffer);
+
+        //if (buffer == CMD_EXT)
+        //{
+        //    std::cout << "Stoped echo clients ...\n";
+        //    break;
+        //}
+
+        //recv_len = recv(client_sock, recv_buffer, sizeof(recv_buffer) - 1, 0);
+
+        //std::cout << recv_buffer << std::endl;
+
+
     }
 
     return EXIT_SUCCESS;
@@ -66,3 +125,4 @@ void EchoClient::str_tolower(std::string& str)
         str[i] = tolower(str[i]);
 
 }
+

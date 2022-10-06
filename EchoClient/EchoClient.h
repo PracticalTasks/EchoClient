@@ -24,4 +24,5 @@ private:
 
 private:
 	const std::string CMD_EXT = "exit";
+	const uint16_t BUFF_SIZE = 256;
 };
