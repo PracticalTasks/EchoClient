@@ -56,16 +56,7 @@ int EchoClient::write(const uint16_t WRITE_PORT)
     while (true)
     {
         std::cout << "Your (Client) message to Server: ";
-        //std::cin >> send_mess;
         fgets(buff.data(), buff.size(), stdin);
-
-        //send_buff.reserve(send_mess.size() + 2);
-        //uint8_t sz_l = send_mess.size();
-        //uint8_t sz_h = (send_mess.size() & 0xFFFF) >> 8;
-
-        //send_buff.at(0) = sz_l;
-        //send_buff.at(1) = sz_h;
-        //send_buff.insert(2, send_mess);
 
         send_mess = buff.data();
 
@@ -78,7 +69,7 @@ int EchoClient::write(const uint16_t WRITE_PORT)
             return EXIT_FAILURE;
         }
 
-        if (send_mess == "exit\n")
+        if (str_tolower(send_mess) == CMD_EXT)
         {
             shutdown(client_sock, SD_BOTH);
             std::cout << "Stopping echo server ...\n";
@@ -97,18 +88,10 @@ int EchoClient::write(const uint16_t WRITE_PORT)
         else
             std::cout << "Server message: " << buff.data() << std::endl;
 
-        //std::cin >> buffer;
-
         //sendto(client_sock, buffer.c_str(), buffer.size(), 0, reinterpret_cast<const sockaddr*>(&serv_addr),
         //    sizeof(serv_addr));
 
-        //str_tolower(buffer);
 
-        //if (buffer == CMD_EXT)
-        //{
-        //    std::cout << "Stoped echo clients ...\n";
-        //    break;
-        //}
 
         //recv_len = recv(client_sock, recv_buffer, sizeof(recv_buffer) - 1, 0);
 
@@ -120,10 +103,11 @@ int EchoClient::write(const uint16_t WRITE_PORT)
     return EXIT_SUCCESS;
 }
 
-void EchoClient::str_tolower(std::string& str)
+std::string EchoClient::str_tolower(const std::string& str)
 {
-    for (int i{}; i < str.size(); ++i)
-        str[i] = tolower(str[i]);
-
+    std::string str_lower;
+    for (int i{}; i < str.size() - 1; ++i)
+        str_lower += tolower(str[i]);
+    return str_lower;
 }
 
