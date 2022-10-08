@@ -17,7 +17,7 @@ int EchoClient::write(const uint16_t WRITE_PORT)
 
     socket_wrapper::SocketWrapper sock_wrap;
     socket_wrapper::Socket client_sock = { AF_INET, SOCK_STREAM, NULL };
-    const char IP_SERV[] = "127.0.0.1";
+    const char IP_SERV[] = "192.168.50.254";
 
     if (!client_sock)
     {
