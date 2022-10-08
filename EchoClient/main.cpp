@@ -9,6 +9,6 @@ int main(int argc, char const *argv[])
 //}
 //
 //    const int WRITE_PORT { std::stoi(argv[1]) };
-    const int WRITE_PORT = 5555;
+    const int WRITE_PORT = 5001;
     EchoClient echo(WRITE_PORT);
 }
