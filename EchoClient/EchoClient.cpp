@@ -87,17 +87,6 @@ int EchoClient::write(const uint16_t WRITE_PORT)
         }
         else
             std::cout << "Server message: " << buff.data() << std::endl;
-
-        //sendto(client_sock, buffer.c_str(), buffer.size(), 0, reinterpret_cast<const sockaddr*>(&serv_addr),
-        //    sizeof(serv_addr));
-
-
-
-        //recv_len = recv(client_sock, recv_buffer, sizeof(recv_buffer) - 1, 0);
-
-        //std::cout << recv_buffer << std::endl;
-
-
     }
 
     return EXIT_SUCCESS;
