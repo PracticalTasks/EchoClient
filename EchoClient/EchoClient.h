@@ -20,7 +20,7 @@ public:
 
 private:
 	int write(const uint16_t WRITE_PORT);
-	void str_tolower(std::string& str);
+	std::string str_tolower(const std::string& str);
 
 private:
 	const std::string CMD_EXT = "exit";
