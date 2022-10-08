@@ -184,6 +184,7 @@ int EchoClient::init_client(const uint16_t WRITE_PORT)
         return EXIT_FAILURE;
     }
 
+    //
     std::cout << "Connected! ...\n";
 
     return EXIT_SUCCESS;
