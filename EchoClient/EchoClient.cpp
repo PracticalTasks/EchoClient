@@ -17,7 +17,7 @@ int EchoClient::write(const uint16_t WRITE_PORT)
 
     socket_wrapper::SocketWrapper sock_wrap;
     socket_wrapper::Socket client_sock = { AF_INET, SOCK_STREAM, NULL };
-    const char IP_SERV[] = "192.168.50.254";
+    const char IP_SERV[] = "127.0.0.1";
 
     if (!client_sock)
     {
@@ -39,13 +39,7 @@ int EchoClient::write(const uint16_t WRITE_PORT)
         return EXIT_FAILURE;
     }
 
-    //
     std::cout << "Connected! ...\n";
-
-    //std::string buffer;
-    //char recv_buffer[256]{};
-    //int recv_len{};
-    //socklen_t client_addrlen = sizeof(sockaddr_in);
 
     std::vector<char>buff(BUFF_SIZE);
     std::string send_mess;

@@ -11,7 +11,6 @@
 #include <socket_wrapper/socket_wrapper.h>
 #include <socket_wrapper/socket_class.h>
 
-
 class EchoClient
 {
 public:
